@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -84,9 +84,10 @@ export const toggleMapControl = createAction(ActionTypes.TOGGLE_MAP_CONTROL, (pa
 export const openDeleteModal = createAction(ActionTypes.OPEN_DELETE_MODAL, datasetId => datasetId);
 
 /**
- * Add a notification to be displayed
+ * Add a notification to be displayed.
+ * Existing notification will be updated in case of matching id.
  * @memberof uiStateActions
- * @param notification - The `notification` object to be added
+ * @param notification - The `notification` object to be added or updated
  * @type {typeof import('./ui-state-actions').addNotification}
  * @public
  */

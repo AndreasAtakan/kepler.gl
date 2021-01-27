@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -101,7 +101,8 @@ test('#visStateSchema -> v1 -> save load filters', t => {
       enlarged: true,
       plotType: 'histogram',
       yAxis: null,
-      animationWindow: 'free'
+      animationWindow: 'free',
+      speed: 4
     },
     {
       dataId: [testGeoJsonDataId],
@@ -112,7 +113,8 @@ test('#visStateSchema -> v1 -> save load filters', t => {
       enlarged: false,
       plotType: 'histogram',
       yAxis: null,
-      animationWindow: 'free'
+      animationWindow: 'free',
+      speed: 1
     }
   ];
 

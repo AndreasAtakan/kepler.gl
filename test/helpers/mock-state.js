@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -150,6 +150,12 @@ function mockStateWithFilters(state) {
     {
       action: VisStateActions.setFilter,
       payload: [0, 'value', [1474606800000, 1474617600000]]
+    },
+
+    // set filter animation speed
+    {
+      action: VisStateActions.updateFilterAnimationSpeed,
+      payload: [0, 4]
     },
 
     // add another filter

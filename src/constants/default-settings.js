@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -792,6 +792,9 @@ export const DEFAULT_NOTIFICATION_TOPICS = keyMirror({
   global: null,
   file: null
 });
+
+// Minimum time between identical notifications about deck.gl errors
+export const THROTTLE_NOTIFICATION_TIME = 2500;
 
 // Animation
 export const BASE_SPEED = 600;

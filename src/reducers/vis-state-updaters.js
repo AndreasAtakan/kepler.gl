@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -557,8 +557,8 @@ export function setFilterAnimationWindowUpdater(state, {id, animationWindow}) {
  */
 export function setFilterUpdater(state, action) {
   const {idx, prop, value, valueIndex = 0} = action;
-
   const oldFilter = state.filters[idx];
+
   if (!oldFilter) {
     Console.error(`filters.${idx} is undefined`);
     return state;

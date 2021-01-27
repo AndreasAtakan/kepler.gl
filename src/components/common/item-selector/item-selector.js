@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -313,7 +313,9 @@ class ItemSelector extends Component {
                     light={this.props.inputTheme === 'light'}
                   />
                 ) : (
-                  <FormattedMessage id={this.props.placeholder} />
+                  <FormattedMessage
+                    id={this.props.placeholder || 'placeholder.selectValue'}
+                  />
                 )}
               </DropdownSelectValue>
               {this.props.erasable && hasValue ? (

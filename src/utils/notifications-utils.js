@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import {
 import {BUG_REPORT_LINK} from 'constants/user-guides';
 
 /**
- * Creates a notofication
+ * Creates a notification
  * @param {object} opt
  * @param {string} opt.message - Message to display during the notification
  * @param {string} opt.type - The type of message. One of DEFAULT_NOTIFICATION_TYPES

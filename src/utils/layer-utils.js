@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -96,7 +96,7 @@ export function getLayerHoverProp({
         return null;
       }
       const {allData, fields} = datasets[dataId];
-      const data = layer.getHoverData(object, allData);
+      const data = layer.getHoverData(object, allData, fields);
       const fieldsToShow = interactionConfig.tooltip.config.fieldsToShow[dataId];
 
       return {

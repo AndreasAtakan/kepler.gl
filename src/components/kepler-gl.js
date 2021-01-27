@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -398,10 +398,13 @@ function KeplerGlFactory(
           <IntlProvider locale={uiState.locale} messages={localeMessages[uiState.locale]}>
             <ThemeProvider theme={theme}>
               <GlobalStyle
-                width={width}
-                height={height}
                 className="kepler-gl"
                 id={`kepler-gl__${id}`}
+                style={{
+                  position: 'relative',
+                  width: `${width}px`,
+                  height: `${height}px`
+                }}
                 ref={this.root}
               >
                 <NotificationPanel {...notificationPanelFields} />
