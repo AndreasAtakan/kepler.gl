@@ -39,9 +39,7 @@ import {
   ArrowDown,
   ArrowUp,
   Clipboard,
-  Cancel,
-  Map as MapIcon,
-  //GridIcon
+  Cancel
 } from 'components/common/icons';
 import {getHTMLMapModeTileUrl} from 'utils/utils';
 import {TOOLTIP_FORMAT_TYPES} from './tooltip';
@@ -181,8 +179,7 @@ export const SIDEBAR_PANELS = [
   {
     id: 'map',
     label: 'sidebar.panels.basemap',
-    iconComponent: MapIcon
-    //iconComponent: Settings
+    iconComponent: Settings
   }
 ];
 
