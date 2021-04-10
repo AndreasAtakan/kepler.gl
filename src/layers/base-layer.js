@@ -48,26 +48,18 @@ import {
 
 import {generateHashId, isPlainObject} from 'utils/utils';
 
-import {
-  getSampleData,
-  getLatLngBounds,
-  maybeToDate,
-  getSortingFunction,
-  notNullorUndefined
-} from 'utils/data-utils';
+import {getSampleData, getLatLngBounds, notNullorUndefined} from 'utils/data-utils';
 
-import {
-  getQuantileDomain,
-  getOrdinalDomain,
-  getLogDomain,
-  getLinearDomain
-} from 'utils/data-scale-utils';
 import {hexToRgb, getColorGroupByName, reverseColorRange} from 'utils/color-utils';
+
+/** @typedef {import('./index').Layer} LayerClass} */
 
 /**
  * Approx. number of points to sample in a large data set
  * @type {number}
  */
+export const LAYER_ID_LENGTH = 6;
+
 const MAX_SAMPLE_SIZE = 5000;
 const defaultDomain = [0, 1];
 const dataFilterExtension = new DataFilterExtension({filterSize: MAX_GPU_FILTERS});
@@ -91,11 +83,12 @@ function* generateColor() {
 }
 
 export const colorMaker = generateColor();
-const defaultGetFieldValue = (field, d) => d[field.tableFieldIndex - 1];
+const defaultGetFieldValue = (field, d) => field.valueAccessor(d);
 
-export default class Layer {
+/** @type {LayerClass} */
+class Layer {
   constructor(props = {}) {
-    this.id = props.id || generateHashId(6);
+    this.id = props.id || generateHashId(LAYER_ID_LENGTH);
 
     // meta
     this.meta = {};
@@ -103,6 +96,7 @@ export default class Layer {
     // visConfigSettings
     this.visConfigSettings = {};
 
+    // @ts-ignore
     this.config = this.getDefaultLayerConfig({
       columns: this.getLayerColumns(),
       ...props
@@ -240,7 +234,7 @@ export default class Layer {
       prev[key] = requiredFields.length
         ? requiredFields.map(f => ({
             value: f.name,
-            fieldIdx: f.tableFieldIndex - 1
+            fieldIdx: f.fieldIdx
           }))
         : null;
       return prev;
@@ -259,7 +253,7 @@ export default class Layer {
     // combinations, e. g. if column a has 2 matched, column b has 3 matched
     // 6 possible column pairs will be returned
     const allKeys = Object.keys(requiredColumns);
-    const pointers = allKeys.map((k, i) => (i === allKeys.length - 1 ? -1 : 0));
+    const pointers = allKeys.map((k, i) => ((i === allKeys.length - 1 ? -1 : 0)));
     const countPerKey = allKeys.map(k => requiredColumns[k].length);
     const pairs = [];
 
@@ -357,7 +351,7 @@ export default class Layer {
     const update = field
       ? {
           value: field.name,
-          fieldIdx: field.tableFieldIndex - 1
+          fieldIdx: field.fieldIdx
         }
       : {value: null, fieldIdx: -1};
 
@@ -682,10 +676,10 @@ export default class Layer {
   hasAllColumns() {
     const {columns} = this.config;
     return (
-      columns &&
+      (columns &&
       Object.values(columns).every(v => {
         return Boolean(v.optional || (v.value && v.fieldIdx > -1));
-      })
+      }))
     );
   }
 
@@ -708,11 +702,11 @@ export default class Layer {
 
   shouldRenderLayer(data) {
     return (
-      this.type &&
+      (this.type &&
       this.config.isVisible &&
       this.hasAllColumns() &&
       this.hasLayerData(data) &&
-      typeof this.renderLayer === 'function'
+      typeof this.renderLayer === 'function')
     );
   }
 
@@ -869,6 +863,9 @@ export default class Layer {
   }
 
   updateData(datasets, oldLayerData) {
+    if (!this.config.dataId) {
+      return {};
+    }
     const layerDataset = datasets[this.config.dataId];
     const {allData} = datasets[this.config.dataId];
 
@@ -900,8 +897,8 @@ export default class Layer {
    * @returns {object} layer
    */
   updateLayerDomain(datasets, newFilter) {
-    const dataset = this.getDataset(datasets);
-    if (!dataset) {
+    const table = this.getDataset(datasets);
+    if (!table) {
       return this;
     }
     Object.values(this.visualChannels).forEach(channel => {
@@ -911,7 +908,7 @@ export default class Layer {
       // no need to update ordinal domain
       if (!newFilter || scaleType !== SCALE_TYPES.ordinal) {
         const {domain} = channel;
-        const updatedDomain = this.calculateLayerDomain(dataset, channel);
+        const updatedDomain = this.calculateLayerDomain(table, channel);
         this.updateLayerConfig({[domain]: updatedDomain});
       }
     });
@@ -920,7 +917,7 @@ export default class Layer {
   }
 
   getDataset(datasets) {
-    return datasets[this.config.dataId];
+    return this.config.dataId ? datasets[this.config.dataId] : null;
   }
 
   /**
@@ -1011,7 +1008,6 @@ export default class Layer {
   }
 
   calculateLayerDomain(dataset, visualChannel) {
-    const {allData, filteredIndexForDomain} = dataset;
     const {scale} = visualChannel;
     const scaleType = this.config[scale];
 
@@ -1021,38 +1017,7 @@ export default class Layer {
       return defaultDomain;
     }
 
-    if (!SCALE_TYPES[scaleType]) {
-      Console.error(`scale type ${scaleType} not supported`);
-      return defaultDomain;
-    }
-
-    // TODO: refactor to add valueAccessor to field
-    const fieldIdx = field.tableFieldIndex - 1;
-    const isTime = field.type === ALL_FIELD_TYPES.timestamp;
-    const valueAccessor = maybeToDate.bind(null, isTime, fieldIdx, field.format);
-    const indexValueAccessor = i => valueAccessor(allData[i]);
-
-    const sortFunction = getSortingFunction(field.type);
-
-    switch (scaleType) {
-      case SCALE_TYPES.ordinal:
-      case SCALE_TYPES.point:
-        // do not recalculate ordinal domain based on filtered data
-        // don't need to update ordinal domain every time
-        return getOrdinalDomain(allData, valueAccessor);
-
-      case SCALE_TYPES.quantile:
-        return getQuantileDomain(filteredIndexForDomain, indexValueAccessor, sortFunction);
-
-      case SCALE_TYPES.log:
-        return getLogDomain(filteredIndexForDomain, indexValueAccessor);
-
-      case SCALE_TYPES.quantize:
-      case SCALE_TYPES.linear:
-      case SCALE_TYPES.sqrt:
-      default:
-        return getLinearDomain(filteredIndexForDomain, indexValueAccessor);
-    }
+    return dataset.getColumnLayerDomain(field, scaleType) || defaultDomain;
   }
 
   hasHoveredObject(objectInfo) {
@@ -1074,6 +1039,7 @@ export default class Layer {
     const fixed = fixedRadius === undefined ? this.config.visConfig.fixedRadius : fixedRadius;
     const {radius} = this.config.visConfig;
 
+    // @ts-ignore
     return fixed ? 1 : (this.config[field] ? 1 : radius) * this.getZoomFactor(mapState);
   }
 
@@ -1180,3 +1146,5 @@ export default class Layer {
     return () => null;
   }
 }
+
+export default Layer;

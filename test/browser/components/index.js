@@ -29,6 +29,7 @@ import './side-panel';
 
 import './common';
 import './editor';
+import './filters';
 import './map-container-test';
 import './geocoder-panel-test';
 import './tooltip-config-test';

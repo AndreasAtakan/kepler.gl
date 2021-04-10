@@ -275,7 +275,7 @@ export default {
       warning: "estàs a punt d'esborrar aquest conjunt de dades. Afectarà {length} capes"
     },
     addStyle: {
-      publishTitle: "1. Publica el teu estil a Mapbox o proporciona el token d'accés",
+      publishTitle: "2. Publica el teu estil a Mapbox o proporciona el token d'accés",
       publishSubtitle1: 'Pots crear el teu propi estil de mapa a',
       publishSubtitle2: 'i',
       publishSubtitle3: 'publicar',
@@ -285,7 +285,7 @@ export default {
       publishSubtitle7:
         'aquí.',
       exampleToken: 'p.ex. pk.abcdefg.xxxxxx',
-      pasteTitle: "2. Enganxa la URL de l'estil",
+      pasteTitle: "1. Enganxa la URL de l'estil",
       pasteSubtitle1: 'Què és un',
       pasteSubtitle2: "URL de l'estil",
       namingTitle: '3. Posa nom al teu estil'

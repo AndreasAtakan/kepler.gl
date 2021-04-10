@@ -20,10 +20,12 @@ export type ActionType = {
   MOUSE_MOVE: string;
   REMOVE_FILTER: string;
   REMOVE_LAYER: string;
+  DUPLICATE_LAYER: string;
   REMOVE_DATASET: string;
   REORDER_LAYER: string;
   SET_FILTER: string;
   SET_FILTER_ANIMATION_TIME: string;
+  SET_FILTER_ANIMATION_TIME_CONFIG:  string;
   SET_FILTER_ANIMATION_WINDOW: string;
   SHOW_DATASET_TABLE: string;
   UPDATE_LAYER_BLENDING: string;
@@ -33,6 +35,7 @@ export type ActionType = {
   UPDATE_FILTER_ANIMATION_SPEED: string;
   PLAY_ANIMATION: string;
   SET_LAYER_ANIMATION_TIME: string;
+  SET_LAYER_ANIMATION_TIME_CONFIG: string;
   UPDATE_ANIMATION_SPEED: string;
   UPDATE_LAYER_ANIMATION_SPEED: string;
   TOGGLE_LAYER_CONFIG_ACTIVE: string;
