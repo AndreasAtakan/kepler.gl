@@ -115,6 +115,7 @@
     "fuzzy": "^0.1.3",
     "global": "^4.3.0",
     "h3-js": "^3.1.0",
+    "html-react-parser": "^1.2.4",
     "html-webpack-plugin": "^4.3.0",
     "keymirror": "^0.1.1",
     "lodash.clonedeep": "^4.0.1",

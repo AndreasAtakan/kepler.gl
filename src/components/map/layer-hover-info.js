@@ -25,6 +25,7 @@ import {Layers} from 'components/common/icons';
 import PropTypes from 'prop-types';
 import {notNullorUndefined} from 'utils/data-utils';
 import {getTooltipDisplayValue, getTooltipDisplayDeltaValue} from 'utils/interaction-utils';
+import parse from "html-react-parser";
 
 export const StyledLayerName = styled(CenterFlexbox)`
   color: ${props => props.theme.textColorHl};
@@ -61,17 +62,20 @@ const Row = ({name, value, deltaValue, url}) => {
   }
 
   const asImg = /<img>/.test(name);
+  const asHTML = name.substring(0,2) == '__';
   return (
     <tr className="row" key={name}>
       <td className="row__name">{name}</td>
       <td className="row__value">
         {asImg ? (
-          <img src={value} />
+          <img src={value} style="max-width: 50px;" />
         ) : url ? (
           <a target="_blank" rel="noopener noreferrer" href={url}>
             {value}
           </a>
-        ) : (
+        ) : asHTML ? (
+          parse(value)
+        ): (
           value
         )}
       </td>
