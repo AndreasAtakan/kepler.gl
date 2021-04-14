@@ -62,7 +62,7 @@ const Row = ({name, value, deltaValue, url}) => {
   }
 
   const asImg = /<img>/.test(name);
-  const asHTML = name.substring(0,2) == '__';
+  const asHTML = name.substr(-1) == ',';
   return (
     <tr className="row" key={name}>
       <td className="row__name">{name}</td>
