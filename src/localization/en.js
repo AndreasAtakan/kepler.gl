@@ -145,6 +145,8 @@ export default {
     sizeScale: 'Size Scale',
     worldUnitSize: 'World Unit Size',
     elevationScale: 'Elevation Scale',
+    enableElevationZoomFactor: 'Use elevation zoom factor',
+    enableElevationZoomFactorDescription: 'Adjust elevation based on current zoom factor',
     heightScale: 'Height Scale',
     coverageRange: 'Coverage Range',
     highPrecisionRendering: 'High Precision Rendering',
@@ -413,6 +415,10 @@ export default {
       lng0: 'source lng',
       lat1: 'target lat',
       lng1: 'target lng'
+    },
+    line: {
+      alt0: 'source altitude',
+      alt1: 'target altitude'
     },
     grid: {
       worldUnitSize: 'Grid Size (km)'

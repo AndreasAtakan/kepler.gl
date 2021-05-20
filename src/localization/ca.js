@@ -145,6 +145,8 @@ export default {
     sizeScale: 'Mida escala',
     worldUnitSize: 'Mida de la unitat mundial',
     elevationScale: 'Escala elevació',
+    enableElevationZoomFactor: 'Utilitzeu el factor de zoom d’elevació',
+    enableElevationZoomFactorDescription: "'Ajusteu l'elevació en funció del factor de zoom actual",
     heightScale: 'Escala alçada',
     coverageRange: 'Rang ed cobertura',
     highPrecisionRendering: 'Representació alta precisió',
@@ -408,6 +410,10 @@ export default {
       lng0: 'lng origen ',
       lat1: 'lat destinació',
       lng1: 'lng destinació'
+    },
+    line: {
+      alt0: 'alçada origen',
+      alt1: 'alçada destinació'
     },
     grid: {
       worldUnitSize: 'Mida de malla (km)'

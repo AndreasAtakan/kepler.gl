@@ -143,6 +143,8 @@ export default {
     sizeScale: 'Koon skaala',
     worldUnitSize: 'Yksikkö',
     elevationScale: 'Korottamisen skaala',
+    enableElevationZoomFactor: 'Käytä korkeuden zoomauskerrointa',
+    enableElevationZoomFactorDescription: 'Säädä korkeus nykyisen zoomauskertoimen perusteella',
     heightScale: 'Korkeuden skaala',
     coverageRange: 'Peittävyyden rajat',
     highPrecisionRendering: 'Tarkka renderöinti',
@@ -399,6 +401,10 @@ export default {
       lng0: 'lähdön lng',
       lat1: 'kohteen lat',
       lng1: 'kohteen lng'
+    },
+    line: {
+      alt0: 'lähteen korkeus',
+      alt1: 'kohde korkeus'
     },
     grid: {
       worldUnitSize: 'Ruutujen koko (km)'
