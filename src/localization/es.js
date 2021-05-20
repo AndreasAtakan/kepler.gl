@@ -194,6 +194,7 @@ export default {
     layerSettings: 'Configuración de capa',
     closePanel: 'Cerrar el panel actual',
     fullscreen: 'Alternar pantalla completa',
+    showInfo: 'Alternar cuadro de información',
     switchToDualView: 'Cambiar a la vista de mapa dual',
     showLegend: 'Mostrar leyenda',
     disable3DMap: 'Desactivar mapa 3D',

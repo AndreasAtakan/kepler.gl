@@ -191,6 +191,7 @@ export default {
     layerSettings: 'Tason asetukset',
     closePanel: 'Sulje paneeli',
     fullscreen: 'Vaihda koko näytöllä',
+    showInfo: 'Vaihda tietoruutu',
     switchToDualView: 'Vaihda kaksoiskarrtanäkymään',
     showLegend: 'Näytä selite',
     disable3DMap: 'Poistu 3D-näkymästä',

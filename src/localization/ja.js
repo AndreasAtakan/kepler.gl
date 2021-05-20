@@ -193,6 +193,8 @@ export default {
     duplicateLayer: 'レイヤを複製',
     layerSettings: 'レイヤ設定',
     closePanel: 'このパネルを閉じる',
+    fullscreen: 'フルスクリーン切り替え',
+    showInfo: '情報ボックスを切り替えます',
     switchToDualView: 'デュアルビューに切り替え',
     showLegend: '凡例を表示',
     disable3DMap: '3D地図を無効化',

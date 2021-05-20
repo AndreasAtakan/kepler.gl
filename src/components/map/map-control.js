@@ -25,9 +25,11 @@ import styled from 'styled-components';
 import {FormattedMessage} from 'localization';
 import classnames from 'classnames';
 
+import ReactMarkdown from 'react-markdown';
+
 import {IconRoundSmall, MapControlButton, Tooltip} from 'components/common/styled-components';
 import MapLayerSelector from 'components/common/map-layer-selector';
-import KeplerGlLogo from 'components/common/logo';
+//import KeplerGlLogo from 'components/common/logo';
 import MapLegend from './map-legend';
 import {
   Close,
@@ -37,6 +39,8 @@ import {
   DrawPolygon,
   EyeSeen,
   EyeUnseen,
+  Files,
+  Info,
   Layers,
   Legend,
   Polygon,
@@ -88,7 +92,7 @@ const StyledMapControlPanelHeader = styled.div.attrs({
   display: flex;
   justify-content: space-between;
   background-color: ${props => props.theme.mapPanelHeaderBackgroundColor};
-  height: 32px;
+  height: auto;
   padding: 6px 12px;
   font-size: 11px;
   color: ${props => props.theme.titleTextColor};
@@ -129,7 +133,7 @@ const MapLegendTooltip = ({id, message}) => (
 const LayerSelectorPanel = React.memo(({items, onMapToggleLayer, isActive, toggleMenuPanel}) =>
   !isActive ? (
     (<MapControlButton
-      key={1}
+      key={'layerSelector'}
       onClick={e => {
         e.preventDefault();
         toggleMenuPanel();
@@ -201,7 +205,7 @@ export function MapLegendPanelFactory() {
   }) =>
     !isActive ? (
       (<MapControlButton
-        key={2}
+        key={'mapLegend'}
         data-tip
         data-for="show-legend"
         className="map-control-button show-legend"
@@ -230,6 +234,137 @@ export function MapLegendPanelFactory() {
   return MapLegendPanel;
 }
 
+const StyledProjectPanel = styled.div`
+  padding: 16px 20px;
+  max-width: 220px;
+  box-shadow: ${props => props.theme.panelBoxShadow};
+  .project-title {
+    color: ${props => props.theme.titleTextColor};
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+  }
+  .project-description {
+    color: ${props => props.theme.textColor};
+    font-size: 11px;
+    margin-top: 12px;
+    a {
+      font-weight: 500;
+      color: ${props => props.theme.titleTextColor};
+    }
+  }
+  .project-links {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+`;
+const StyledPanelAction = styled.div`
+  border-radius: 2px;
+  padding: 5px;
+  font-weight: 500;
+  a {
+    align-items: center;
+    justify-content: flex-start;
+    display: flex;
+    height: 16px;
+    color: ${props => (props.active ? props.theme.textColorHl : props.theme.subtextColor)};
+  }
+  :hover {
+    cursor: pointer;
+    a {
+      color: ${props => props.theme.textColorHl};
+    }
+  }
+`;
+
+const LinkButton = props => (
+  <StyledPanelAction className="project-link__action">
+    <a target="_blank" rel="noopener noreferrer" href={props.href}>
+      <p>{props.label}</p>
+    </a>
+  </StyledPanelAction>
+);
+const LinkRenderer = props => {
+  return (
+    <a href={props.href} target="_blank" rel="noopener noreferrer">
+      {props.children}
+    </a>
+  );
+};
+
+InfoButtonFactory.deps = [];
+export function InfoButtonFactory() {
+  const defaultActionIcons = {
+    info: Info
+  };
+
+  const InfoButton = ({
+    scale,
+    isActive,
+    isExport,
+    onToggleMenuPanel,
+    disableClose,
+    logoComponent,
+    info,
+    actionIcons = defaultActionIcons
+  }) =>
+    !isActive ? (
+      (<MapControlButton
+        key={'mapInfo'}
+        data-tip
+        data-for="show-info"
+        className="map-control-button show-info"
+        onClick={e => {
+          e.preventDefault();
+          onToggleMenuPanel();
+        }}
+      >
+        <actionIcons.info height="18px" />
+        <Tooltip id="show-info" place="left" effect="solid">
+          <span>
+            <FormattedMessage id={'tooltip.showInfo'} />
+          </span>
+        </Tooltip>
+      </MapControlButton>)
+    ) : (
+      (<MapControlPanel
+        scale={scale}
+        header={'\ '}
+        onClick={onToggleMenuPanel}
+        isExport={isExport}
+        disableClose={disableClose}
+        logoComponent={logoComponent}
+      >
+        <StyledProjectPanel>
+          <div className="project-title">
+            <div>{info.title}</div>
+          </div>
+          <div className="project-description">
+            <ReactMarkdown
+              source={info.detail || info.description}
+              renderers={{link: LinkRenderer}}
+            />
+          </div>
+          <div className="project-links">
+            <LinkButton
+              label="Datasource"
+              href={info.dataUrl}
+              iconComponent={Files}
+              height="15px"
+            />
+          </div>
+        </StyledProjectPanel>
+      </MapControlPanel>)
+    );
+
+  InfoButton.displayName = 'InfoButton';
+  return InfoButton;
+}
+
 FullscreenButtonFactory.deps = [];
 export function FullscreenButtonFactory() {
   let isFullscreen = false;
@@ -240,7 +375,7 @@ export function FullscreenButtonFactory() {
   }) =>
     !isExport ? (
       (<MapControlButton
-        key={2}
+        key={'mapFullscreen'}
         data-tip
         data-for="action-fullscreen"
         className="map-control-button fullscreen-map"
@@ -470,15 +605,16 @@ const LocalePanel = React.memo(
 
 LocalePanel.displayName = 'LocalePanel';
 
-const LegendLogo = <KeplerGlLogo version={false} appName="kepler.gl" />;
+const LegendLogo = null; //<KeplerGlLogo version={false} appName="kepler.gl" />;
 MapControlFactory.deps = [
   MapDrawPanelFactory,
   Toggle3dButtonFactory,
   FullscreenButtonFactory,
+  InfoButtonFactory,
   SplitMapButtonFactory,
   MapLegendPanelFactory
 ];
-function MapControlFactory(MapDrawPanel, Toggle3dButton, FullscreenButton, SplitMapButton, MapLegendPanel) {
+function MapControlFactory(MapDrawPanel, Toggle3dButton, FullscreenButton, InfoButton, SplitMapButton, MapLegendPanel) {
   class MapControl extends Component {
     static propTypes = {
       datasets: PropTypes.object.isRequired,
@@ -550,6 +686,7 @@ function MapControlFactory(MapDrawPanel, Toggle3dButton, FullscreenButton, Split
       } = this.props;
 
       const {
+        mapInfo = {},
         visibleLayers = {},
         mapLegend = {},
         toggle3d = {},
@@ -560,46 +697,23 @@ function MapControlFactory(MapDrawPanel, Toggle3dButton, FullscreenButton, Split
 
       return (
         <StyledMapControl className="map-control" top={top}>
-          {/* fullscreen Map */}
+          {/* Info-box Map */}
           {isExport !== true ? (
-            <ActionPanel className="fullscreen-map" key={0}>
-              <FullscreenButton />
-            </ActionPanel>
-          ) : null}
-
-          {/* Split Map */}
-          {splitMap.show && readOnly !== true ? (
-            <ActionPanel className="split-map" key={0}>
-              <SplitMapButton
-                isSplit={isSplit}
-                mapIndex={mapIndex}
-                onToggleSplitMap={onToggleSplitMap}
+            <ActionPanel className="info-map" key={0}>
+              <InfoButton
+                scale={scale}
+                isActive={mapInfo.active}
+                isExport={isExport}
+                onToggleMenuPanel={() => onToggleMapControl('mapInfo')}
+                disableClose={mapInfo.disableClose}
+                info={mapInfo.info}
               />
-            </ActionPanel>
-          ) : null}
-
-          {/* Map Layers */}
-          {isSplit && visibleLayers.show && readOnly !== true ? (
-            <ActionPanel className="map-layers" key={1}>
-              <LayerSelectorPanel
-                items={this.layerPanelItemsSelector(this.props)}
-                onMapToggleLayer={onMapToggleLayer}
-                isActive={visibleLayers.active}
-                toggleMenuPanel={() => onToggleMapControl('visibleLayers')}
-              />
-            </ActionPanel>
-          ) : null}
-
-          {/* 3D Map */}
-          {toggle3d.show ? (
-            <ActionPanel className="toggle-3d" key={2}>
-              <Toggle3dButton dragRotate={dragRotate} onTogglePerspective={onTogglePerspective} />
             </ActionPanel>
           ) : null}
 
           {/* Map Legend */}
           {mapLegend.show ? (
-            <ActionPanel className="show-legend" key={3}>
+            <ActionPanel className="show-legend" key={1}>
               <MapLegendPanel
                 layers={layers.filter(l => layersToRender[l.id])}
                 scale={scale}
@@ -613,8 +727,38 @@ function MapControlFactory(MapDrawPanel, Toggle3dButton, FullscreenButton, Split
             </ActionPanel>
           ) : null}
 
+          {/* Split Map */}
+          {splitMap.show && readOnly !== true ? (
+            <ActionPanel className="split-map" key={2}>
+              <SplitMapButton
+                isSplit={isSplit}
+                mapIndex={mapIndex}
+                onToggleSplitMap={onToggleSplitMap}
+              />
+            </ActionPanel>
+          ) : null}
+
+          {/* Map Layers */}
+          {isSplit && visibleLayers.show && readOnly !== true ? (
+            <ActionPanel className="map-layers" key={3}>
+              <LayerSelectorPanel
+                items={this.layerPanelItemsSelector(this.props)}
+                onMapToggleLayer={onMapToggleLayer}
+                isActive={visibleLayers.active}
+                toggleMenuPanel={() => onToggleMapControl('visibleLayers')}
+              />
+            </ActionPanel>
+          ) : null}
+
+          {/* 3D Map */}
+          {toggle3d.show ? (
+            <ActionPanel className="toggle-3d" key={4}>
+              <Toggle3dButton dragRotate={dragRotate} onTogglePerspective={onTogglePerspective} />
+            </ActionPanel>
+          ) : null}
+
           {mapDraw.show ? (
-            <ActionPanel key={4}>
+            <ActionPanel key={5}>
               <MapDrawPanel
                 isActive={mapDraw.active && mapDraw.activeMapIndex === mapIndex}
                 editor={editor}
@@ -626,7 +770,7 @@ function MapControlFactory(MapDrawPanel, Toggle3dButton, FullscreenButton, Split
           ) : null}
 
           {mapLocale.show ? (
-            <ActionPanel key={5}>
+            <ActionPanel key={6}>
               <LocalePanel
                 isActive={mapLocale.active}
                 activeLocale={locale}
@@ -635,6 +779,13 @@ function MapControlFactory(MapDrawPanel, Toggle3dButton, FullscreenButton, Split
                 onToggleMenuPanel={() => onToggleMapControl('mapLocale')}
                 disableClose={mapLocale.disableClose}
               />
+            </ActionPanel>
+          ) : null}
+
+          {/* Fullscreen Map */}
+          {isExport !== true ? (
+            <ActionPanel className="fullscreen-map" key={7}>
+              <FullscreenButton />
             </ActionPanel>
           ) : null}
         </StyledMapControl>
