@@ -235,7 +235,7 @@ export function MapLegendPanelFactory() {
 }
 
 const StyledProjectPanel = styled.div`
-  padding: 16px 20px;
+  padding: 10px 20px;
   max-width: 220px;
   box-shadow: ${props => props.theme.panelBoxShadow};
   .project-title {
@@ -255,11 +255,14 @@ const StyledProjectPanel = styled.div`
     }
   }
   .project-links {
-    margin-top: 20px;
+    margin-top: 10px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    p {
+      margin-top: 0;
+    }
   }
 `;
 const StyledPanelAction = styled.div`
@@ -349,14 +352,16 @@ export function InfoButtonFactory() {
               renderers={{link: LinkRenderer}}
             />
           </div>
-          <div className="project-links">
-            <LinkButton
-              label="Datasource"
-              href={info.dataUrl}
-              iconComponent={Files}
-              height="15px"
-            />
-          </div>
+          {info.dataUrl ? (
+            <div className="project-links">
+              <LinkButton
+                label="Datasource"
+                href={info.dataUrl}
+                iconComponent={Files}
+                height="15px"
+              />
+            </div>
+          ) : null}
         </StyledProjectPanel>
       </MapControlPanel>)
     );
