@@ -9,4 +9,4 @@ if [ -z "$1" ]
     path="../Napkin-Visual/client/"
 fi
 
-cp umd/keplergl.min.js $path/lib/build.min.js
+cp umd/keplergl.min.js $path/lib/build-trefadder.min.js
