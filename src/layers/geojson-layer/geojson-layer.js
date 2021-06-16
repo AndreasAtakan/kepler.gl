@@ -333,9 +333,9 @@ export default class GeoJsonLayer extends Layer {
         pickable: false,
         sizeUnits: 'meters',
         getPosition: d => d.coordinates,
-        getText: d => d.name ? d.name.split('\ ')[0] : '_',
+        getText: d => d.name ? (d.name.substr(-2) == "AS" ? d.name.substr(0, d.name.length-3) : d.name) : '_',
         getColor: d => [230, 230, 230],
-        getSize: 5,
+        getSize: 3,
         getAngle: -50,
         getTextAnchor: 'middle',
         getAlignmentBaseline: 'center'
