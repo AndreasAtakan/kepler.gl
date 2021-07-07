@@ -22,7 +22,7 @@ import uniq from 'lodash.uniq';
 import {DATA_TYPES} from 'type-analyzer';
 
 import Layer, {colorMaker} from '../base-layer';
-import {GeoJsonLayer as DeckGLGeoJsonLayer} from '@deck.gl/layers';
+import {GeoJsonLayer as DeckGLGeoJsonLayer, TextLayer as DeckGLTextLayer} from '@deck.gl/layers';
 import {getGeojsonDataMaps, getGeojsonBounds, getGeojsonFeatureTypes} from './geojson-utils';
 import GeojsonLayerIcon from './geojson-layer-icon';
 import {GEOJSON_FIELDS, HIGHLIGH_COLOR_3D, CHANNEL_SCALES} from 'constants/default-settings';
@@ -293,6 +293,11 @@ export default class GeoJsonLayer extends Layer {
 
     const pickable = interactionConfig.tooltip.enabled;
     const hoveredObject = this.hasHoveredObject(objectHovered);
+    var getCentroid = function (arr) { 
+        return arr.reduce(function (x,y) {
+            return [x[0] + y[0]/arr.length, x[1] + y[1]/arr.length] 
+        }, [0,0]) 
+    };
 
     return [
       new DeckGLGeoJsonLayer({
@@ -321,6 +326,19 @@ export default class GeoJsonLayer extends Layer {
               }
             : {})
         }
+      }),
+      new DeckGLTextLayer({
+        id: defaultLayerProps.id + '99',
+        data: data.data.map(e => { return { name: e.properties.kunde, coordinates: getCentroid(e.geometry.coordinates[0][0]) } }),
+        pickable: false,
+        sizeUnits: 'meters',
+        getPosition: d => d.coordinates,
+        getText: d => d.name ? (d.name.substr(-2) == "AS" ? d.name.substr(0, d.name.length-3) : d.name) : '_',
+        getColor: d => [230, 230, 230],
+        getSize: 3,
+        getAngle: -50,
+        getTextAnchor: 'middle',
+        getAlignmentBaseline: 'center'
       }),
       ...(hoveredObject && !visConfig.enable3d
         ? [
